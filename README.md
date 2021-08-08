@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# Rumba Restaurants
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A food order app for restaurants in Juba, South Sudan.
 
 ## Available Scripts
 
