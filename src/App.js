@@ -1,21 +1,13 @@
-import './App.css';
+import "./App.css";
+import Restaurant from "./components/restaurant";
+import getAll from "./repository/restaurant";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {getAll.docs.map((restaurant) => {
+        return <Restaurant name={restaurant.name} />;
+      })}
     </div>
   );
 }

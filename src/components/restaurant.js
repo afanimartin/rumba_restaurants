@@ -1,13 +1,9 @@
-class Restaurant extends React.Component{
-  constructor(){
-    super();
-
-    this.state = {
-      name: '',
-      city: ''
-    }
-  }
-  return(
-    
+const Restaurant = (props) => {
+  return (
+    <>
+      <p>{props.name}</p>
+    </>
   );
-}
+};
+
+export default Restaurant;
