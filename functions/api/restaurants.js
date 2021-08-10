@@ -1,3 +1,4 @@
+// const db = require("../util/admin"); will throw db.collection not a function error
 const { db } = require("../util/admin");
 
 exports.getAllRestaurants = (request, response) => {
