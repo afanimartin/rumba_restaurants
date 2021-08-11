@@ -1,6 +1,6 @@
 const { admin, db } = require("../util/admin");
 const { firebase } = require("../util/config");
-const { validateLoginData } = require("../util/validators");
+const { validateLoginData, validateSignUpData } = require("../util/validators");
 
 exports.login = (request, response) => {
   const user = {
@@ -47,7 +47,8 @@ exports.signup = (request, response) => {
 
   let token, userId;
 
-  db.collection(`/users/${newUser.username}`)
+  db.collection("users")
+    .doc(`${newUser.username}`)
     .get()
     .then((doc) => {
       if (doc.exists) {
@@ -55,10 +56,9 @@ exports.signup = (request, response) => {
           .status(400)
           .json({ username: "This username is already taken" });
       } else {
-        return firebase.auth.createUserWithEmailAndPassword(
-          newUser.email,
-          newUser.password
-        );
+        return firebase
+          .auth()
+          .createUserWithEmailAndPassword(newUser.email, newUser.password);
       }
     })
     .then((data) => {
@@ -77,7 +77,7 @@ exports.signup = (request, response) => {
         createdAt: new Date().toISOString(),
         userId,
       };
-      return db.doc(`/users/${newUser.username}`).set(userCredentials);
+      return db.doc(`users/${newUser.username}`).set(userCredentials);
     })
     .then(() => {
       return response.status(201).json({ token });
