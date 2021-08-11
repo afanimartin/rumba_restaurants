@@ -1,3 +1,4 @@
+const { response } = require("express");
 const { admin, db } = require("../util/admin");
 const { firebase } = require("../util/config");
 const { validateLoginData } = require("../util/validators");
@@ -28,3 +29,7 @@ exports.login = (request, response) => {
         .json({ general: "Invalid email/password, please try again" });
     });
 };
+
+exports.signup = (request, response) => {
+  
+}
