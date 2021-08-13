@@ -13,4 +13,4 @@ const firebaseConfig = {
 // error: [Your API key is invalid, please check you have copied it correctly]
 firebase.initializeApp(firebaseConfig);
 
-module.exports = { firebase };
+module.exports = { firebase, firebaseConfig };

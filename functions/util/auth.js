@@ -8,16 +8,14 @@ module.exports = (request, response, next) => {
   ) {
     idToken = request.headers.authorization.split("Bearer ")[1];
   } else {
-    console.log("No token found");
-
+    console.error("No token found");
     return response.status(403).json({ error: "Unauthorized" });
   }
-
   admin
     .auth()
     .verifyIdToken(idToken)
-    .then((verifiedToken) => {
-      request.user = verifiedToken;
+    .then((decodedToken) => {
+      request.user = decodedToken;
       return db
         .collection("users")
         .where("userId", "==", request.user.uid)
@@ -27,11 +25,10 @@ module.exports = (request, response, next) => {
     .then((data) => {
       request.user.username = data.docs[0].data().username;
       request.user.imageUrl = data.docs[0].data().imageUrl;
-      return next(); // program moves to the next middleware function
+      return next();
     })
-    .catch((error) => {
-      console.log("Error while verifying token", error);
-
-      return response.status(403).json(error);
+    .catch((err) => {
+      console.error("Error while verifying token", err);
+      return response.status(403).json(err);
     });
 };
