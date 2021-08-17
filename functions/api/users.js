@@ -76,6 +76,7 @@ exports.signup = (request, response) => {
         email: newUser.email,
         createdAt: new Date().toISOString(),
         userId,
+        level: 1
       };
       return db.doc(`users/${newUser.username}`).set(userCredentials);
     })
@@ -165,4 +166,46 @@ exports.uploadProfilePhoto = (request, response) => {
       });
   });
   busboy.end(request.rawBody);
+};
+
+exports.getUserDetails = (request, response) => {
+  let userData = {};
+
+  db.doc(`/users/${request.user.username}`)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        userData.userCredentials = doc.data();
+
+        return response.json(userData);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      return response.status(500).json({ error: error.code });
+    });
+};
+
+exports.updateUserDetails = (request, response) => {
+  let userToUpdate = {
+    phoneNumber: request.body.phoneNumber,
+    firstName: request.body.firstName,
+    lastName: request.body.lastName,
+    country: request.body.country,
+    updatedAt: new Date().toISOString(),
+  };
+
+  db.collection("users")
+    .doc(`${request.user.username}`)
+    .update(userToUpdate)
+    .then(() => {
+      response.json({ message: "User details updated successfully" });
+    })
+    .catch((error) => {
+      console.error(error);
+
+      response
+        .status(500)
+        .json({ message: "Failed to update details. Please try again later" });
+    });
 };

@@ -1,6 +1,6 @@
 const { admin, db } = require("./admin");
 
-module.exports = (request, response, next) => {
+const verifyToken = (request, response, next) => {
   let idToken;
   if (
     request.headers.authorization &&
@@ -24,6 +24,7 @@ module.exports = (request, response, next) => {
     })
     .then((data) => {
       request.user.username = data.docs[0].data().username;
+      request.user.level = data.docs[0].data().level;
       request.user.imageUrl = data.docs[0].data().imageUrl;
       return next();
     })
@@ -32,3 +33,25 @@ module.exports = (request, response, next) => {
       return response.status(403).json(err);
     });
 };
+
+const isAdmin = (request, response, next) => {
+  // check that a user has level===2
+  db.doc(`/users/${request.user.username}`)
+    .get()
+    .then((doc) => {
+      if (doc.exists && doc.data().level === 1) {
+        return response.json({
+          error: "Must be admin to access this resource",
+        });
+      } else {
+        return next();
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+
+      return response.status(500).json({ erorr: error.code });
+    });
+};
+
+module.exports = { verifyToken, isAdmin };
